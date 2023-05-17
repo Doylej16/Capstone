@@ -5,7 +5,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      'marvel': "url('../../public/marvel.jpeg')",
     },
   },
   plugins: [],
