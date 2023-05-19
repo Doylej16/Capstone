@@ -4,24 +4,15 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 import Login from './Components/Login';
 import Navbar from './Components/navbar';
 import Signup from './Components/Signup';
-import Home from './Components/home';
-import About from './Components/about';
+import FetchData from './Components/FetchData';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
   return (
-    <div>
-    
-    <BrowserRouter>
-    <Navbar/>
-    
-    <Routes>
-      <Route index element={<Home/>}></Route>
-      <Route path='about' element={<About/>}></Route>
-      <Route path='login' element= {<Login/>}></Route>
-      <Route path='signup' element={<Signup/>}></Route>
-    </Routes>
-    </BrowserRouter>
+    <div className="">
+     <Signup/>
+     <FetchData/>
     </div>
   );
 }
