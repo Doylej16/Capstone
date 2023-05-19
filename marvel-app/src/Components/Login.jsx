@@ -4,7 +4,7 @@ import React from "react";
 export default function Login() {
     return (
       <div
-      className="flex items-center justify-center min-h-screen mr-2"
+      className="flex items-center justify-center min-h-screen "
       style={{
         backgroundImage: 'url("/marvel.jpeg")',
         backgroundRepeat: 'no-repeat',
