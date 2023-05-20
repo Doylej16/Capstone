@@ -21,10 +21,10 @@ console.log(result);
   return (
     <>
 <div className="bg-gray-400">
-<h2 class="flex justify-center text-6xl animate-bounce">Search Your Favorite Character</h2>
+
 <div className="flex justify-center hero-search">
-    <input className="hero-search py-2 px-3 shadow-lg bg-gray-900 text-white font-mono text-lg" type="text" placeholder="Find your character..." value={name} onChange={(e) => setName(e.target.value)} />
-    <button className="text-lg py-2 px-4 transition duration-500 ease-in-out bg-gray-600 hover:bg-red-800 transform hover:-translate-y-1 hover:scale-110 text-white" type="submit" onClick={fetchMarvel} >Search</button>
+    <input className="hero-search py-2 px-3 shadow-lg bg-gray-900 text-white " type="text" placeholder="Find your character..." value={name} onChange={(e) => setName(e.target.value)} />
+    <button className=" py-2 px-4 transition duration-500 ease-in-out bg-gray-600 hover:bg-red-800 transform hover:-translate-y-1 hover:scale-110 text-white" type="submit" onClick={fetchMarvel} >Search</button>
     </div>
 
     {/* <div className="flex justify-center button">
