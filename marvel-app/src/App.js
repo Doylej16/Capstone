@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import {BrowserRouter, Routes, Route} from "react-router-dom"
 import Login from './Components/Login';
 import Navbar from './Components/navbar';
 import Signup from './Components/Signup';
@@ -17,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/login" element={<Login/>}/>
-          <Route path="/Hometest" element={<Hometest/>}/>
+          <Route path="/" element={<FetchData/>}/>
         </Routes>
       </Router>    
       </div>
