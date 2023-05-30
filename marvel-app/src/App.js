@@ -9,16 +9,17 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from 'react';
 import Home from './Components/home';
 import Footer from './Components/Footer';
+import About from './Components/about';
 
 function App() {
   return (
     <div className="">
       <Router>
-        <Navbar/>
         <Routes>
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/" element={<Home/>}/>
+          <Route path='/about' element={<About/>}/>
         </Routes>
       </Router> 
       <Footer />   

@@ -18,7 +18,7 @@ const HeroDisplay = ({heroSearch}) => {
     <p className='font-mono text-lg'>{attributionText}</p>
     <p className='font-mono text-lg animate-pulse'>{copyright}</p>
         </Card.Text>
-        <Button className='text-lg' variant="danger">Add to Favorite</Button>
+        <Button className='text-lg bg-green-600 rounded-md' variant="danger">Add to Favorite</Button>
       </Card.Body>
     </Card>
     
