@@ -6,15 +6,19 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [recoveryEmail, setRecoveryEmail] = useState("");
   const [recoveryStatus, setRecoveryStatus] = useState("");
+  
 
   async function submit(e) {
     e.preventDefault();
-
+  
     try {
-      await axios.post("https://localhost:3100/login", {
+      await axios.post("http://localhost:3100/login", {
         email,
         password,
       });
+  
+      // Redirect to localhost/
+      window.location.href = "http://localhost:3000/";
     } catch (e) {
       console.log(e);
     }
@@ -33,7 +37,7 @@ export default function Login() {
       console.log(e);
       setRecoveryStatus("Password recovery failed");
     }
-  }
+  }  
 
   return (
     <div
@@ -115,6 +119,7 @@ export default function Login() {
         {recoveryStatus && (
           <p className="mt-4 text-gray-800">{recoveryStatus}</p>
         )}
+
       </div>
     </div>
   );

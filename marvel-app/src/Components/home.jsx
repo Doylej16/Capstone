@@ -1,6 +1,7 @@
 import React from "react"
 import HeroDisplay from "./HeroDisplay"
 import FetchData from "./FetchData"
+import Navbar from "./navbar"
 
 
 
@@ -10,8 +11,9 @@ import FetchData from "./FetchData"
 
 export default function Home() {
     return(
-        
-        <div
+        <div>
+          <Navbar/>
+                  <div
       className="flex items-center justify-center h-100% "
       style={{
         backgroundImage: 'url("/marvel-wallpaper.jpg")',
@@ -64,5 +66,8 @@ export default function Home() {
          
         </div>
         </div>
+        </div>
+
         
     )};
+
