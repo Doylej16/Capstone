@@ -35,19 +35,14 @@ export default function Signup() {
         email,
         password,
       })
-      .then(res => {
-        if (res.data === "notexist") {
-          navigate("/Hometest", { state: { id: name } });
-        }
-      });
-
-      alert("Signup successful");
-    } 
+      navigate("/login", { state: { id: name } });
+    }
     
     catch (error) {
       console.log(error);
     }
   }
+
   return (
     <div
       className="flex items-center justify-center min-h-screen mr-2"
