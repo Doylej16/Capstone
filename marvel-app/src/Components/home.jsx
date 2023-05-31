@@ -2,6 +2,7 @@ import React from "react"
 import HeroDisplay from "./HeroDisplay"
 import FetchData from "./FetchData"
 import Navbar from "./navbar"
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
@@ -34,7 +35,7 @@ export default function Home() {
           <div className="text-lg text-center"> Search for your favorite Marvel characters or Sign up to save your favorite characters to your profile. </div>
           <div className="grid grid-col-1 xl:grid-cols-2 mt-10">
               <div className="flex justify-center">
-                <img className="h-auto max-w-sm rounded-lg ml-2" src="/spiderman.jpeg" alt="" srcset="" />
+                <img className="h-auto max-w-sm rounded-lg ml-2 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" src="/spiderman.jpeg" alt="" srcset="" />
               </div>
               <div className="flex flex-col justify-center items-center">
                 <div className="text-3xl">The Amazing Spider Man</div>
@@ -49,12 +50,12 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex justify-center  xl:order-none">
-                  <img className="h-auto max-w-sm rounded-lg ml-2 mt-10 " src="/ironman.jpg" alt="" srcset="" />
+                  <img className="h-auto max-w-sm rounded-lg ml-2 mt-10 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" src="/ironman.jpg" alt="" srcset="" />
                 </div>
                 
                 
                 <div className="flex justify-center">
-                  <img className="h-auto max-w-sm rounded-lg ml-2 mt-10" src="/thor1.jpg" alt="" srcset="" />
+                  <img className="h-auto max-w-sm rounded-lg ml-2 mt-10 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" src="/thor1.jpg" alt="" srcset="" />
                 </div>
                 <div className="flex flex-col justify-center items-center" >
                 <div className="text-3xl">Thor</div>
