@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from './navbar';
 
 const Quiz = () => {
     const questions = [
@@ -126,10 +127,20 @@ const Quiz = () => {
 	  
 
   return (
-	<div className="main flex justify-center items-center min-h-100vh bg-red-700 font-mono">
-    <div className='quiz flex justify-evenly w-400 min-h-200 h-screen rounded p-20 bg-stone-500 shadow-stone-800'>
+    <>
+    <Navbar />
+	<div className="main flex justify-center items-center font-mono h-100%"
+                      style={{
+                        backgroundImage: 'url("/quiz.jpg")',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundAttachment: 'scroll',
+                      }}
+                    >
+    <div className='quiz flex justify-evenly w-400 min-h-200 h-screen rounded bg-white p-20 shadow-stone-800'>
 			{showScore ? (
-				<div className='score-section flex items-center flex-col text-white text-lg'>
+				<div className='score-section flex items-center flex-col text-lg'>
 					You scored {score} out of {questions.length}
 					<button className="retry-button transition duration-500 ease-in-out bg-gray-600 hover:bg-red-800 transform hover:-translate-y-1 hover:scale-110 text-white font-semibold py-2 px-4 rounded" onClick={retryQuiz}>Retry</button>
 					<button className="answer-button transition duration-500 ease-in-out bg-gray-600 hover:bg-red-800 transform hover:-translate-y-1 hover:scale-110 text-white font-semibold py-2 px-4 rounded" onClick={checkAnswers}>Answer</button>
@@ -138,7 +149,7 @@ const Quiz = () => {
         <h3 className="text-white mt-4">Correct Answers:</h3>
         <ul>
           {questions.map((question, index) => (
-            <li key={index} className="text-white font-mono text-lg">
+            <li key={index} className="font-mono text-lg">
               {index + 1}. {question.answerOptions.find(option => option.correct)?.answers}
             </li>
           ))}
@@ -149,10 +160,10 @@ const Quiz = () => {
 			) : (
 				<>
 					<div className='question-section relative w-full'>
-						<div className='question-count mb-20 text-white text-lg'>
+						<div className='question-count mb-20 text-lg'>
 							<span>Question {currentQuestion + 1}</span>/{questions.length}
 						</div>
-						<div className='question-text mb-12 text-white text-lg'>{questions[currentQuestion].question}</div>
+						<div className='question-text mb-12 text-lg'>{questions[currentQuestion].question}</div>
 					</div>
 					<div className='answer-section flex flex-col justify-between w-full text-lg'>
 						{questions[currentQuestion].answerOptions.map((answerOption) => (
@@ -163,6 +174,7 @@ const Quiz = () => {
 			)}
 		</div>
 		</div>
+        </>
   )
 }
 
