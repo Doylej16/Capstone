@@ -3,7 +3,7 @@ import { Card, Button } from 'react-bootstrap';
 
 const HeroDisplay = ({ heroSearch, addToFavorites }) => {
   const thumbnail = heroSearch[0].thumbnail.path + '.' + heroSearch[0].thumbnail.extension;
-  const attributionText = 'Data provided by Marvel. © 2023 MARVEL';
+  const attributionText = 'Data provided by Marvel.';
 
   const handleAddToFavorites = () => {
     addToFavorites(heroSearch[0].id); // Pass the Marvel character ID to the addToFavorites function
@@ -11,7 +11,7 @@ const HeroDisplay = ({ heroSearch, addToFavorites }) => {
 
   return (
     <>
-      <div className='flex justify-center bg-gray-400'>
+      <div className='flex justify-center'>
         <Card style={{ width: '20rem' }}>
           <Card.Img
             className='transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110'

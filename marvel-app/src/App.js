@@ -10,6 +10,7 @@ import { useState } from 'react';
 import Home from './Components/home';
 import Footer from './Components/Footer';
 import About from './Components/about';
+import Quiz from './Components/Quiz';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/" element={<Home/>}/>
           <Route path='/about' element={<About/>}/>
+          <Route path="/quiz" element={<Quiz/>}/>
         </Routes>
       </Router> 
       <Footer />   
