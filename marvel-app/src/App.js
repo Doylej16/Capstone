@@ -11,7 +11,7 @@ import Home from './Components/home';
 import Footer from './Components/Footer';
 import About from './Components/about';
 import Quiz from './Components/Quiz';
-
+import Characters from './Components/Characters';
 function App() {
   return (
     <div className="">
@@ -22,6 +22,7 @@ function App() {
           <Route path="/" element={<Home/>}/>
           <Route path='/about' element={<About/>}/>
           <Route path="/quiz" element={<Quiz/>}/>
+          <Route path="/characters" element={<Characters/>}/>
         </Routes>
       </Router> 
       <Footer />   

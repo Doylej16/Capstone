@@ -1,8 +1,8 @@
 import React from "react"
-import HeroDisplay from "./HeroDisplay"
-import FetchData from "./FetchData"
+// import HeroDisplay from "./HeroDisplay"
+// import FetchData from "./FetchData"
 import Navbar from "./navbar"
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
@@ -30,7 +30,7 @@ export default function Home() {
             
           </div>
           <div>
-          <FetchData/>
+          {/* <FetchData/> */}
           </div>
           <div className="text-lg text-center"> Search for your favorite Marvel characters or Sign up to save your favorite characters to your profile. </div>
           <div className="grid grid-col-1 xl:grid-cols-2 mt-10">
