@@ -1,44 +1,37 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import { Card, Button } from 'react-bootstrap';
 
-const HeroDisplay = ({heroSearch}) => {
-    const thumbnail = heroSearch[0].thumbnail.path + '.' + heroSearch[0].thumbnail.extension;
-    const copyright = '© 2023 MARVEL';
-    const attributionText = 'Data provided by Marvel.'
+const HeroDisplay = ({ heroSearch, addToFavorites }) => {
+  const thumbnail = heroSearch[0].thumbnail.path + '.' + heroSearch[0].thumbnail.extension;
+  const attributionText = 'Data provided by Marvel.';
+
+  const handleAddToFavorites = () => {
+    addToFavorites(heroSearch[0].id); // Pass the Marvel character ID to the addToFavorites function
+  };
+
   return (
     <>
-        <div className='flex justify-center'>
+      <div className='flex justify-center'>
         <Card style={{ width: '20rem' }}>
-      <Card.Img className='transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110' variant="top" src={thumbnail} />
-      <Card.Body>
-        <Card.Title className='text-lg'>Name: {heroSearch[0].name}</Card.Title>
-        <Card.Text>
-    <p className='font-mono text-lg'>{heroSearch[0].description}</p>
-    <p className='font-mono text-lg'>{attributionText}</p>
-    <p className='font-mono text-lg animate-pulse'>{copyright}</p>
-        </Card.Text>
-        <Button className='text-lg bg-green-600 rounded-md' variant="danger">Add to Favorite</Button>
-      </Card.Body>
-    </Card>
-    
-    {/* <div className='flex justify-center bg-gray-400'> */}
-    {/* <div className="h-640 min-w-640 max-w-screen-sm"> */}
-    {/* <p class="flex justify-center animate-bounce w-6 h-6">Check Below</p> */}
-    {/* <img className="transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" src={thumbnail} alt="hero" height= "25%" width="25%" />
-    <p className="font-mono text-lg">Name: {heroSearch[0].name}</p>
-    <p className='font-mono'>{heroSearch[0].description}</p>
-    <p className='font-mono'>{attributionText}</p>
-    <p className='font-mono'>{copyright}</p> */}
-    {/* <p>{heroSearch[0].stories.available}</p>
-    <p>{heroSearch[0].stories.items[0].name}</p>
-    <p>{heroSearch[0].series.items[0].name}</p>
-    <p>{heroSearch[0].events.items[1].name}</p> */}
-    </div>
-    {/* </div> */}
+          <Card.Img
+            className='transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110'
+            variant="top"
+            src={thumbnail}
+          />
+          <Card.Body>
+            <Card.Title className='text-lg'>Name: {heroSearch[0].name}</Card.Title>
+            <Card.Text>
+              <p className='font-mono text-lg'>{heroSearch[0].description}</p>
+              <p className='font-mono text-lg'>{attributionText}</p>
+            </Card.Text>
+            <Button className='text-lg bg-green-600 rounded-md' variant="danger" onClick={handleAddToFavorites}>
+              Add to Favorite
+            </Button>
+          </Card.Body>
+        </Card>
+      </div>
     </>
-  )
-}
-<h2>{typeof heroSearch != "undefined"}</h2>
+  );
+};
 
-export default HeroDisplay
+export default HeroDisplay;
