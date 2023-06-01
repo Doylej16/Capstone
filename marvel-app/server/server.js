@@ -1,28 +1,20 @@
 const express = require('express');
-const collection = require("../mongo");
+const collection = require('../mongo');
 const bcrypt = require('bcrypt');
 const { user } = require('../models');
-const cors = require("cors");
+const cors = require('cors');
 const app = express();
-const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const dbConfig = require('../config/config.js');
 const path = require('path');
-const { Pool } = require('pg');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const { session, LocalStrategy, pgSession, passport, Pool } = require('./passportSetup'); // Include passport related modules here
 
-const pool = new Pool({
-  connectionString: 'postgres://skxehfhc:Gobo77ZLoZws53LHTQSEG4ZufYN9-wpf@mahmud.db.elephantsql.com/skxehfhc', // Replace with your ElephantSQL connection string
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+require('dotenv').config({ path: path.join(__dirname, '../path/to/.env') });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 app.use(
   session({
@@ -30,7 +22,12 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: new pgSession({
-      pool,
+      pool: new Pool({
+        connectionString: 'postgres://skxehfhc:Gobo77ZLoZws53LHTQSEG4ZufYN9-wpf@mahmud.db.elephantsql.com/skxehfhc', // Replace with your ElephantSQL connection string
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      }),
       tableName: 'sessions',
     }),
   })
@@ -39,79 +36,31 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(
-  new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
-    try {
-      const userRecord = await user.findOne({ where: { email } });
+// Existing signup route
+app.get('/signup', cors(), (req, res) => {});
 
-      if (!userRecord) {
-        return done(null, false, { message: 'Invalid email or password' });
-      }
-
-      const passwordMatch = await bcrypt.compare(password, userRecord.password);
-
-      if (!passwordMatch) {
-        return done(null, false, { message: 'Invalid email or password' });
-      }
-
-      return done(null, userRecord);
-    } catch (error) {
-      return done(error);
-    }
-  })
-);
-
-// Serialize and deserialize user for sessions
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const userRecord = await user.findOne({ where: { id } });
-    done(null, userRecord);
-  } catch (error) {
-    done(error);
-  }
-});
-
-const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect('/login');
-};
-
-
-
-
-app.get("/signup", cors(), (req,res)=>{
-
-})
-
-app.post('/signup', async (req, res) =>  {
+app.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
 
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+  bcrypt.hash(req.body.password, 10, async function (err, hash) {
+    if (err) {
+      res.status(500).send('Internal Server Error');
+    } else {
+      const data = {
+        name: name,
+        email: email,
+        password: hash,
+      };
 
-    const newUser = await user.build({
-      name,
-      email,
-      password: hashedPassword,
-    });
-    await newUser.save();
-    res.json({ name });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+      const newUser = await user.build(data);
+      await newUser.save();
+      res.json({ name: name });
+    }
+  });
 });
 
-
-app.get("/login", cors(), (req,res)=>{
-
-})
+// Existing login route
+app.get('/login', cors(), (req, res) => {});
 
 app.post('/login', passport.authenticate('local', {
   successRedirect: '/',
@@ -120,34 +69,95 @@ app.post('/login', passport.authenticate('local', {
   console.log('User logged in:', req.user);
 });
 
+// New password recovery route
+app.post('/recover-password', async (req, res) => {
+  const { email } = req.body;
 
+  try {
+    // Generate a password reset token (you can use a library like `crypto` to generate a unique token)
+    const resetToken = generateResetToken();
 
-app.get("/", cors(), (req,res)=>{
-  res.sendFile(path.join(__dirname, "..", "src", "Components", "home.jsx"));
-})
+    // Save the reset token and its expiration date to the user's record in the database
+    await saveResetToken(email, resetToken);
 
-app.post('/api/addFavorite',isAuthenticated, (req, res) => {
-  const { userId, marvelCharacterId } = req.body;
+    // Compose the email message
+    const emailMessage = `
+      <p>Hello,</p>
+      <p>We received a request to reset your password. Please click the link below to reset your password:</p>
+      <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>
+      <p>If you didn't request this, you can ignore this email.</p>
+    `;
 
-  const user = getUserById(userId);
+    // Send the password reset email
+    await sendEmail(email, 'Password Reset', emailMessage);
 
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'Password recovery email sent' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-
-  if (user.favorites.includes(marvelCharacterId)) {
-    return res.status(400).json({ error: 'Character already in favorites' });
-  }
-
-  user.favorites.push(marvelCharacterId);
-
-  updateUser(user);
-
-  return res.status(200).json({ success: true });
 });
 
+// Helper function to generate a random password reset token
+function generateResetToken() {
+  return crypto.randomBytes(20).toString('hex');
+}
 
+// Helper function to save the reset token and its expiration date to the user's record in the database
+async function saveResetToken(email, resetToken) {
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      {
+        resetToken,
+        resetTokenExpiration: Date.now() + 3600000, // Set the expiration date to 1 hour from the current time
+      }
+    );
 
-app.listen(3100,()=>{
-    console.log("server is runnig")
-})
+    // Handle the case when the user is not found
+    if (!user) {
+      // User not found, handle the error or send an appropriate response
+      throw new Error('User not found');
+    }
+
+    // Token saved successfully
+    console.log('Reset token saved:', resetToken);
+  } catch (error) {
+    // Handle the error or send an appropriate response
+    console.error('Error saving reset token:', error);
+    throw error;
+  }
+}
+
+// Helper function to send the password reset email
+async function sendEmail(to, subject, html) {
+  // Configure the email transporter (replace the options with your own SMTP server settings)
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'doylej1616@gmail.com',
+      pass: 'Tiauna624?',
+    },
+  });
+
+  // Compose the email message
+  const message = {
+    from: 'doylej1616@gmail.com',
+    to,
+    subject,
+    html,
+  };
+
+  // Send the email
+  await transporter.sendMail(message);
+}
+
+app.get('/', cors(), (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'src', 'Components', 'home.jsx'));
+});
+
+app.listen(3100, () => {
+  console.log('Server is running');
+});
