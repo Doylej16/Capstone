@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
-export default function Home() {
+export default function Home({currentUser}) {
     return(
         <div>
           <Navbar/>
@@ -30,7 +30,7 @@ export default function Home() {
             
           </div>
           <div>
-          <FetchData/>
+          <FetchData currentUser={currentUser}/>
           </div>
           <div className="text-lg text-center"> Search for your favorite Marvel characters or Sign up to save your favorite characters to your profile. </div>
           <div className="grid grid-col-1 xl:grid-cols-2 mt-10">
