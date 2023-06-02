@@ -75,7 +75,6 @@ passport.deserializeUser(async (email, done) => {
   }
 });
 
-
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
@@ -83,10 +82,26 @@ const isAuthenticated = (req, res, next) => {
   res.status(401).json({ error: 'Not authenticated' });
 };
 
+// API endpoint for adding a character to favorites
+app.post('/api/addToFavorites', isAuthenticated, async (req, res) => {
+  const { characterId } = req.body;
+  const userId = req.user.id; // Assuming you have the user ID available in the request object
 
-
-
-
+  try {
+    // Add the character ID to the user's favorites (replace with your database logic)
+    const userRecord = await user.findOne({ where: { id: userId } });
+    if (userRecord) {
+      userRecord.favorites.push(characterId);
+      await userRecord.save();
+      res.json({ message: 'Character added to favorites' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 app.get("/signup", cors(), (req,res)=>{
 
 })
@@ -114,59 +129,6 @@ console.log('User saved:', newUser);
 });
 
 app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }));
-
-// Route for adding a favorite character
-app.post('/api/addFavorite', isAuthenticated, async (req, res) => {
-  const { marvelCharacterId } = req.body;
-  const userEmail = req.user.email; // Retrieve the email of the authenticated user
-
-  try {
-    console.log('User Email:', userEmail);
-
-    const userRecord = await user.findOne({ where: { email: userEmail } });
-    console.log('User Record:', userRecord);
-
-    if (!userRecord) {
-      console.log('User not found');
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    if (userRecord.favorites.includes(marvelCharacterId)) {
-      console.log('Character already in favorites');
-      return res.status(400).json({ error: 'Character already in favorites' });
-    }
-
-    userRecord.favorites.push(marvelCharacterId);
-    await userRecord.save();
-
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Route for fetching favorites
-app.get('/api/favorites', isAuthenticated, async (req, res) => {
-  const userEmail = req.user.email; // Retrieve the email of the authenticated user
-
-  try {
-    const userRecord = await user.findOne({ where: { email: userEmail } });
-
-    if (!userRecord) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const favorites = userRecord.favorites;
-
-    return res.status(200).json(favorites);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-
 
 
 app.get('/', cors(), (req, res) => {
