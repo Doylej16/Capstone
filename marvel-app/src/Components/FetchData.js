@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import HeroDisplay from './HeroDisplay'
-const FetchData = () => {
+
+
+const FetchData = ({ currentUser }) => {
 const [name, setName] = useState('')
 const [marvel, setMarvel] = useState(null)
 const [searchError, setSearchError] = useState(false)
