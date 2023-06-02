@@ -1,29 +1,27 @@
 const express = require('express');
-const collection = require('../mongo');
+const collection = require('./mongo');
 const bcrypt = require('bcrypt');
-const { user } = require('../models');
+const { user, MarvelCharacter } = require('./models');
 const cors = require('cors');
 const app = express();
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const dbConfig = require('../config/config.js');
+const dbConfig = require('./config/config.js');
 const path = require('path');
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: 'postgres://skxehfhc:Gobo77ZLoZws53LHTQSEG4ZufYN9-wpf@mahmud.db.elephantsql.com/skxehfhc', // Replace with your ElephantSQL connection string
+  connectionString: 'postgres://skxehfhc:Gobo77ZLoZws53LHTQSEG4ZufYN9-wpf@mahmud.db.elephantsql.com/skxehfhc',
   ssl: {
     rejectUnauthorized: false,
   },
 });
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(express.static('public'));
-
 app.use(
   session({
     secret: 'hjkhfsdjkfhsjkdhfksjhfkjsdhfu324i3idfs',
@@ -35,7 +33,6 @@ app.use(
     }),
   })
 );
-
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -61,9 +58,8 @@ passport.use(
   })
 );
 
-// Serialize and deserialize user for sessions
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.email);
 });
 
 passport.deserializeUser(async (email, done) => {
@@ -82,29 +78,36 @@ const isAuthenticated = (req, res, next) => {
   res.status(401).json({ error: 'Not authenticated' });
 };
 
-// API endpoint for adding a character to favorites
-app.post('/api/addToFavorites', isAuthenticated, async (req, res) => {
-  const { characterId } = req.body;
-  const userId = req.user.id; // Assuming you have the user ID available in the request object
+app.use(cors());
+app.use(express.static('public'));
 
+app.post('/api/favorites', isAuthenticated, async (req, res) => {
   try {
-    // Add the character ID to the user's favorites (replace with your database logic)
-    const userRecord = await user.findOne({ where: { id: userId } });
-    if (userRecord) {
-      userRecord.favorites.push(characterId);
-      await userRecord.save();
-      res.json({ message: 'Character added to favorites' });
-    } else {
-      res.status(404).json({ error: 'User not found' });
-    }
+    console.log('Request body:', req.body);
+
+    const { name, description, thumbnail_url } = req.body;
+    const userEmail = req.user.email;
+
+    console.log('User email:', userEmail);
+
+    MarvelCharacter.create({ name, description, thumbnail_url, userEmail })
+      .then((character) => {
+        console.log('Character added:', character.toJSON());
+        res.sendStatus(201);
+      })
+      .catch((error) => {
+        console.error('Error adding character:', error);
+        res.sendStatus(500);
+      });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error processing request:', error);
+    res.sendStatus(400);
   }
 });
-app.get("/signup", cors(), (req,res)=>{
 
-})
+
+app.get('/signup', cors(), (req, res) => {
+});
 
 app.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
@@ -118,8 +121,8 @@ app.post('/signup', async (req, res) => {
       password: hashedPassword,
     });
     await newUser.save();
-    await newUser.save();
-console.log('User saved:', newUser);
+
+    console.log('User saved:', newUser);
 
     res.json({ name });
   } catch (error) {
@@ -130,11 +133,10 @@ console.log('User saved:', newUser);
 
 app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }));
 
-
 app.get('/', cors(), (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'src', 'Components', 'home.jsx'));
 });
 
 app.listen(3100, () => {
-  console.log('server is running');
+  console.log('Server is running');
 });
