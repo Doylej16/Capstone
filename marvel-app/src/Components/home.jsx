@@ -10,7 +10,7 @@ import Navbar from "./navbar"
 
 
 
-export default function Home() {
+export default function Home({currentUser}) {
     return(
         <div>
           <Navbar/>

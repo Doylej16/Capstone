@@ -6,18 +6,21 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [recoveryEmail, setRecoveryEmail] = useState("");
   const [recoveryStatus, setRecoveryStatus] = useState("");
-  
+  const [authenticated, setAuthenticated] = useState(false);
+
 
   async function submit(e) {
     e.preventDefault();
-  
+
     try {
       await axios.post("http://localhost:3100/login", {
         email,
         password,
       });
-  
-      // Redirect to localhost/
+
+      setAuthenticated(true);
+      localStorage.setItem("authenticated", true);
+
       window.location.href = "http://localhost:3000/";
     } catch (e) {
       console.log(e);
