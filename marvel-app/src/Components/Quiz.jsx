@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from './navbar';
+import { motion } from "framer-motion";
 
 const Quiz = () => {
     const questions = [
@@ -138,42 +139,62 @@ const Quiz = () => {
                         backgroundAttachment: 'scroll',
                       }}
                     >
-    <div className='quiz flex justify-evenly w-400 min-h-200 h-screen rounded bg-white p-20 shadow-stone-800'>
-			{showScore ? (
-				<div className='score-section flex items-center flex-col text-lg'>
-					You scored {score} out of {questions.length}
-					<button className="retry-button transition duration-500 ease-in-out bg-gray-600 hover:bg-red-800 transform hover:-translate-y-1 hover:scale-110 text-white font-semibold py-2 px-4 rounded" onClick={retryQuiz}>Retry</button>
-					<button className="answer-button transition duration-500 ease-in-out bg-gray-600 hover:bg-red-800 transform hover:-translate-y-1 hover:scale-110 text-white font-semibold py-2 px-4 rounded" onClick={checkAnswers}>Answer</button>
-					{showAnswers && (
-      <div className="correct-answers">
-        <h3 className="text-white mt-4">Correct Answers:</h3>
-        <ul>
-          {questions.map((question, index) => (
-            <li key={index} className="font-mono text-lg">
-              {index + 1}. {question.answerOptions.find(option => option.correct)?.answers}
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-				</div>
-			) : (
-				<>
-					<div className='question-section relative w-full'>
+      <div className="box">
+        <div className='quiz flex justify-evenly w-400 min-h-200 h-screen border-solid border-2 rounded p-20 bg-white shadow-stone-800'>
+          {showScore ? (
+            <div className='score-section flex items-center flex-col text-lg'>
+              You scored {score} out of {questions.length}
+              <button className="retry-button transition duration-500 ease-in-out bg-gray-600 hover:bg-blue-800 transform hover:-translate-y-1 hover:scale-110 text-white font-semibold py-2 px-4 rounded" onClick={retryQuiz}>Retry</button>
+              <button className="answer-button transition duration-500 ease-in-out bg-gray-600 hover:bg-blue-800 transform hover:-translate-y-1 hover:scale-110 text-white font-semibold py-2 px-4 rounded" onClick={checkAnswers}>Answers</button>
+              {showAnswers && (
+                <div className="correct-answers">
+                  <h3 className="text-lg mt-4">Correct Answers:</h3>
+                  <ul>
+                    {questions.map((question, index) => (
+                      <li key={index} className="text-lg font-mono">
+                        {index + 1}. {question.answerOptions.find(option => option.correct)?.answers}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className='question-section relative w-full'>
+			  <motion.div
+                  key={currentQuestion}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.5,
+                    ease: [0, 0.71, 0.2, 1.01]
+                  }}
+                >
 						<div className='question-count mb-20 text-lg'>
 							<span>Question {currentQuestion + 1}</span>/{questions.length}
 						</div>
 						<div className='question-text mb-12 text-lg'>{questions[currentQuestion].question}</div>
-					</div>
+	
 					<div className='answer-section flex flex-col justify-between w-full text-lg'>
-						{questions[currentQuestion].answerOptions.map((answerOption) => (
-							<button className='flex p-3 justify-start items-center rounded text-white w-full transition duration-500 ease-in-out bg-gray-600 hover:bg-red-800 transform hover:-translate-y-1 hover:scale-110' onClick={() => handleAnswerOptionClick(answerOption.correct)}>{answerOption.answers}</button>
-						))}
-					</div>
-				</>
-			)}
-		</div>
-		</div>
+                    {questions[currentQuestion].answerOptions.map((answerOption, index) => (
+                      <motion.button
+                        key={index}
+                        className='flex p-3 justify-start items-center rounded text-white w-full transition duration-500 ease-in-out bg-gray-600 hover:bg-blue-800 transform hover:-translate-y-1 hover:scale-110'
+                        onClick={() => handleAnswerOptionClick(answerOption.correct)}
+                      >
+                        {answerOption.answers}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
         </>
   )
 }
